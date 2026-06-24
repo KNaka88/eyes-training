@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react'
+import * as SecureStore from 'expo-secure-store'
 
 export interface Settings {
   speed: number
@@ -6,6 +7,7 @@ export interface Settings {
   circleSize: number
   move: boolean
   pace: boolean
+  trainingDuration: number
 }
 
 const DEFAULTS: Settings = {
@@ -14,7 +16,10 @@ const DEFAULTS: Settings = {
   circleSize: 36,
   move: false,
   pace: false,
+  trainingDuration: 60,
 }
+
+const STORAGE_KEY = 'eyes_training_settings'
 
 interface SettingsContextValue {
   settings: Settings
@@ -29,8 +34,24 @@ export const SettingsContext = createContext<SettingsContextValue>({
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<Settings>(DEFAULTS)
 
+  useEffect(() => {
+    SecureStore.getItemAsync(STORAGE_KEY).then(raw => {
+      if (!raw) { return }
+      try {
+        const stored = JSON.parse(raw) as Partial<Settings>
+        setSettings(prev => ({ ...prev, ...stored }))
+      } catch {
+        // ignore corrupt data
+      }
+    })
+  }, [])
+
   function update(patch: Partial<Settings>) {
-    setSettings(prev => ({ ...prev, ...patch }))
+    setSettings(prev => {
+      const next = { ...prev, ...patch }
+      SecureStore.setItemAsync(STORAGE_KEY, JSON.stringify(next))
+      return next
+    })
   }
 
   return (

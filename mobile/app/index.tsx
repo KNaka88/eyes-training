@@ -6,12 +6,66 @@ import { useAnimation } from '../src/hooks/useAnimation'
 import { useFloatingPosition } from '../src/hooks/useFloatingPosition'
 import { useSettings } from '../src/context/SettingsContext'
 import { CirclePair } from '../src/components/CirclePair'
+import { useState, useEffect, useRef } from 'react'
+
+function formatTime(seconds: number): string {
+  const m = Math.floor(seconds / 60)
+  const s = seconds % 60
+  return `${m}:${String(s).padStart(2, '0')}`
+}
 
 export default function TrainingScreen() {
   const { settings } = useSettings()
   const offsets = useAnimation(settings.speed, settings.maxDistance, settings.pace)
   const floatPos = useFloatingPosition(settings.move)
   const insets = useSafeAreaInsets()
+
+  const [timeLeft, setTimeLeft] = useState(settings.trainingDuration)
+  const [isRunning, setIsRunning] = useState(false)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    setTimeLeft(settings.trainingDuration)
+    setIsRunning(false)
+  }, [settings.trainingDuration])
+
+  useEffect(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+    if (!isRunning) {
+      return
+    }
+    intervalRef.current = setInterval(() => {
+      setTimeLeft(prev => (prev <= 1 ? 0 : prev - 1))
+    }, 1000)
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+    }
+  }, [isRunning])
+
+  useEffect(() => {
+    if (timeLeft === 0 && isRunning) {
+      setIsRunning(false)
+    }
+  }, [timeLeft, isRunning])
+
+  const done = timeLeft === 0
+
+  function handleTimerButton() {
+    if (isRunning) {
+      setIsRunning(false)
+    } else {
+      if (done) {
+        setTimeLeft(settings.trainingDuration)
+      }
+      setIsRunning(true)
+    }
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: '#080808' }}>
@@ -34,6 +88,16 @@ export default function TrainingScreen() {
         </Text>
         <Text style={{ fontSize: 13, color: '#6a5a48', letterSpacing: 0.5 }}>
           Relax your gaze — let the circles merge into one
+        </Text>
+        <Text style={{
+          fontSize: 28,
+          fontWeight: '200',
+          color: done ? '#c8a870' : '#c8b89a',
+          letterSpacing: 2,
+          marginTop: 12,
+          fontVariant: ['tabular-nums'],
+        }}>
+          {done ? 'Done' : formatTime(timeLeft)}
         </Text>
       </View>
 
@@ -62,6 +126,9 @@ export default function TrainingScreen() {
             <Text style={fabTextStyle}>? Tutorial</Text>
           </Pressable>
         </Link>
+        <Pressable style={fabStyle} onPress={handleTimerButton}>
+          <Text style={fabTextStyle}>{isRunning ? '◼ Stop Timer' : '▶ Start Timer'}</Text>
+        </Pressable>
         <Link href="/settings" asChild>
           <Pressable style={fabStyle}>
             <Text style={fabTextStyle}>⚙ Settings</Text>

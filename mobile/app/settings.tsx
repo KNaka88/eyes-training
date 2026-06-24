@@ -87,6 +87,15 @@ export default function SettingsScreen() {
             displayValue={`${settings.circleSize}px`}
             onChange={v => update({ circleSize: v })}
           />
+          <SliderRow
+            label="Training Duration"
+            value={settings.trainingDuration}
+            min={30}
+            max={300}
+            step={30}
+            displayValue={formatDuration(settings.trainingDuration)}
+            onChange={v => update({ trainingDuration: v })}
+          />
         </View>
       </ScrollView>
     </View>
@@ -128,6 +137,12 @@ interface SliderRowProps {
   step: number
   displayValue: string
   onChange: (v: number) => void
+}
+
+function formatDuration(seconds: number): string {
+  const m = Math.floor(seconds / 60)
+  const s = seconds % 60
+  return s === 0 ? `${m}:00` : `${m}:${String(s).padStart(2, '0')}`
 }
 
 function SliderRow({ label, value, min, max, step, displayValue, onChange }: SliderRowProps) {
