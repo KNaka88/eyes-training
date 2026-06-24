@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "Magical Eyes",
+    "slug": "magical-eyes",
+    "version": "1.0.0",
+    "orientation": "default",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.yourname.magicaleyes"
+    },
+    "android": {
+      "package": "com.yourname.magicaleyes",
+      "adaptiveIcon": {
+        "backgroundColor": "#080808"
+      }
+    },
+    "plugins": [
+      "expo-router",
+      "expo-asset",
+      "expo-font"
+    ],
+    "scheme": "magical-eyes",
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
