@@ -1,4 +1,4 @@
-# Magical Eyes
+# Eyes Training
 
 A parallel-view stereogram training tool. Two circles oscillate horizontally — relax your gaze as if looking through the screen, and the circles merge into one floating at a perceived depth. Adjust speed, distance, and size to find your comfort zone.
 

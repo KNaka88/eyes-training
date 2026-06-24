@@ -16,7 +16,7 @@ export function TrainingScreen() {
   return (
     <div style={styles.screen}>
       <div style={styles.header}>
-        <h1 style={styles.title}>Magical Eyes</h1>
+        <h1 style={styles.title}>Eyes Training</h1>
         <p style={styles.subtitle}>Relax your gaze — let the circles merge into one</p>
       </div>
 

@@ -30,7 +30,7 @@ export default function TrainingScreen() {
           textTransform: 'uppercase',
           marginBottom: 6,
         }}>
-          Magical Eyes
+          Eyes Training
         </Text>
         <Text style={{ fontSize: 13, color: '#6a5a48', letterSpacing: 0.5 }}>
           Relax your gaze — let the circles merge into one
