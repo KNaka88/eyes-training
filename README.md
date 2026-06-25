@@ -23,6 +23,16 @@ npm run start     # scan QR code with Expo Go
 
 Supports both portrait and landscape orientation.
 
+### Install on device (Android APK)
+
+```bash
+eas login          # one-time login
+cd mobile
+eas build -p android --profile preview
+```
+
+EAS builds in the cloud and provides a download link when done. Download the APK and sideload it onto your Android device.
+
 ---
 
 ## Settings
